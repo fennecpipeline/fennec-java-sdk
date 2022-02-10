@@ -1,6 +1,6 @@
 # Fennec Pipelines Java SDK
 
-This Java SDK provides utilities to design Fennec Pipelines using Java.
+This Java SDK provides utilities to write Fennec Pipelines using Java.
 
 Add the dependency:
 
