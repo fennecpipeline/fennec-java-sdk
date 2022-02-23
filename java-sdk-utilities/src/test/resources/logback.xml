@@ -1,0 +1,26 @@
+<configuration>
+    <appender name="fennec-events"
+              class="org.fennec.sdk.log.LogStageEventAppender"/>
+
+    <appender name="STDOUT" class="org.fennec.org.fennec.sdk.testing.utils.TestingEventAppender">
+        <encoder>
+            <pattern>%msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- All logs (except named "fennec-print-events" are logged to the fennec-events appender) -->
+    <root level="trace">
+        <appender-ref ref="fennec-events"/>
+    </root>
+
+    <!-- The fennec-print-events are used to simply print in console the event -->
+    <logger name="fennec-print-events" level="info" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="org.eclipse" level="OFF"/>
+
+    <logger name="com.github.tomakehurst.wiremock" level="TRACE" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+</configuration>

@@ -1,0 +1,12 @@
+<Translate>
+    <hello>
+        <french>bonjour</french>
+        <italian>buongiorno</italian>
+        <spanish>buenos dias</spanish>
+    </hello>
+    <goodbye>
+        <french>au revoir</french>
+        <italian>arrivederci</italian>
+        <spanish>adios</spanish>
+    </goodbye>
+</Translate>

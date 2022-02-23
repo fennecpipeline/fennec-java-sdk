@@ -13,9 +13,11 @@ import org.fennec.sdk.model.commons.Deployment;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @JsonPropertyOrder({ "apiVersion", "kind", "timestamp", "stage", "parallel", "deployment", })
 @Accessors(prefix = { "_", "" })
 @ToString
+@Builder
 public class StartStageEvent implements StageEvent {
 
     public static final String API_VERSION = "v1";

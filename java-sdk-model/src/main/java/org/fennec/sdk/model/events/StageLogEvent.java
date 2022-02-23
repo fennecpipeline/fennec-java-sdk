@@ -13,9 +13,11 @@ import org.slf4j.event.Level;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @JsonPropertyOrder({ "apiVersion", "kind", "timestamp", "stage", "level", "message", })
 @Accessors(prefix = { "_", "" })
 @ToString
+@Builder
 public class StageLogEvent implements StageEvent {
 
     public static final String API_VERSION = "v1";
