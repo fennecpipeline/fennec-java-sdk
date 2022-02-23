@@ -54,7 +54,7 @@ class TestLocalExecService {
         stage("Init", context -> {
             try {
                 LocalExecService localExecService = new LocalExecService(System.getProperty("user.dir"), level);
-                CommandOutput output = localExecService.exec("echo", "Hello\nworld");
+                CommandOutput output = localExecService.execCommand("echo", "Hello\nworld");
                 completableFuture.complete(output);
             } catch (ExecCommandException e) {
                 fail("Command must be success", e);
@@ -104,7 +104,7 @@ class TestLocalExecService {
         stage("Init", context -> {
             try {
                 LocalExecService localExecService = new LocalExecService(System.getProperty("user.dir"), Level.INFO);
-                CommandOutput output = localExecService.exec("fovhofv", "hioihve");
+                CommandOutput output = localExecService.execCommand("fovhofv", "hioihve");
             } catch (ExecCommandException e) {
                 commandMustHaveFail.complete(e);
                 fail("Error during init: " + e.getMessage(), e);
@@ -142,7 +142,7 @@ class TestLocalExecService {
         stage("Init", context -> {
             try {
                 LocalExecService localExecService = new LocalExecService(System.getProperty("user.dir"), Level.INFO);
-                CommandOutput output = localExecService.exec("/bin/sh", "src/test/resources/failing-script.sh");
+                CommandOutput output = localExecService.execCommand("/bin/sh", "src/test/resources/failing-script.sh");
             } catch (ExecCommandException e) {
                 commandMustHaveFail.complete(e);
                 fail("Error during init: " + e.getMessage(), e);
@@ -182,7 +182,7 @@ class TestLocalExecService {
         stage("Init", context -> {
             try {
                 LocalExecService localExecService = new LocalExecService(System.getProperty("user.dir"), Level.INFO);
-                localExecService.exec(1, "sleep", "10");
+                localExecService.execCommand(1, "sleep", "10");
             } catch (ExecCommandException e) {
                 commandMustHaveFail.complete(e);
                 fail("Error during init: " + e.getMessage(), e);

@@ -32,13 +32,21 @@ public class LocalExecService implements ExecService {
         this.level = Level.INFO;
     }
 
+    public static CommandOutput exec(String... cmd) throws ExecCommandException {
+        return new LocalExecService().execCommand(cmd);
+    }
+
+    public static CommandOutput exec(long timeoutSecond, String... cmd) throws ExecCommandException {
+        return new LocalExecService().execCommand(timeoutSecond, cmd);
+    }
+
     @Override
-    public CommandOutput exec(long timeoutSecond, String... cmd) throws ExecCommandException {
+    public CommandOutput execCommand(long timeoutSecond, String... cmd) throws ExecCommandException {
         return executeCommand(timeoutSecond, cmd);
     }
 
     @Override
-    public CommandOutput exec(String... cmd) throws ExecCommandException {
+    public CommandOutput execCommand(String... cmd) throws ExecCommandException {
         return executeCommand(null, cmd);
     }
 

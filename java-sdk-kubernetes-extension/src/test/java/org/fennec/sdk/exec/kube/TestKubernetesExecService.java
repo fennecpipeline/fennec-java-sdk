@@ -12,7 +12,6 @@ import io.fabric8.mockwebserver.internal.WebSocketMessage;
 import lombok.SneakyThrows;
 import org.fennec.sdk.exec.common.CommandOutput;
 import org.fennec.sdk.exec.common.ExecCommandException;
-import org.fennec.sdk.exec.local.LocalExecService;
 import org.fennec.sdk.model.events.TimestampedEvent;
 import org.fennec.sdk.pipeline.Pipeline;
 import org.fennec.sdk.testing.utils.TestingEventAppender;
@@ -180,7 +179,7 @@ public class TestKubernetesExecService {
                         "test",
                         "test-container",
                         200L);
-                CommandOutput output = kubernetesExecService.exec("echo", "Hello\nworld");
+                CommandOutput output = kubernetesExecService.execCommand("echo", "Hello\nworld");
                 completableFuture.complete(output);
             } catch (ExecCommandException e) {
                 fail("Command must be success", e);
@@ -242,7 +241,7 @@ public class TestKubernetesExecService {
                         "test",
                         "test-container",
                         200L);
-                kubernetesExecService.exec("dhohc", "uhovueh");
+                kubernetesExecService.execCommand("dhohc", "uhovueh");
                 fail("Command must fail");
             } catch (ExecCommandException e) {
                 completableFuture.complete(e);

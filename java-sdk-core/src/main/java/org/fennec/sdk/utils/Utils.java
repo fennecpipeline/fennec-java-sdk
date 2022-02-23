@@ -3,12 +3,17 @@ package org.fennec.sdk.utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Utils {
 
-    public static String getEnv(String name, String defaultValue) {
-        String env = System.getenv(name);
-        return env != null ? env : defaultValue;
+    public static String env(String name, String defaultValue) {
+        return env(name).orElse(defaultValue);
+    }
+
+    public static Optional<String> env(String name) {
+        return Optional.ofNullable(System.getenv(name));
     }
 
     /**

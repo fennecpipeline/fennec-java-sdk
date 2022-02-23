@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.api.model.StatusDetails;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.ExecListener;
 import io.fabric8.kubernetes.client.dsl.ExecWatch;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.fennec.sdk.exec.common.CommandOutput;
@@ -62,8 +63,8 @@ public class KubernetesExecService implements ExecService {
     }
 
     @Override
-    public CommandOutput exec(String... cmd) throws ExecCommandException {
-        return exec(defaultTimeoutSeconds, cmd);
+    public CommandOutput execCommand(String... cmd) throws ExecCommandException {
+        return execCommand(defaultTimeoutSeconds, cmd);
     }
 
     /**
@@ -75,7 +76,7 @@ public class KubernetesExecService implements ExecService {
      * @throws ExecCommandException
      */
     @Override
-    public CommandOutput exec(long timeoutSecond, String... cmd) throws ExecCommandException {
+    public CommandOutput execCommand(long timeoutSecond, String... cmd) throws ExecCommandException {
         Pod pod = client.pods().inNamespace(namespace).withName(podName).get();
         log.debug("Running command: {} on pod {} in namespace {}",
                 Arrays.toString(cmd),

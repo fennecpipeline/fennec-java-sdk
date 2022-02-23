@@ -10,7 +10,7 @@ public interface ExecService {
      * @return
      * @throws ExecCommandException
      */
-    CommandOutput exec(long timeoutSecond, String... cmd) throws ExecCommandException;
+    CommandOutput execCommand(long timeoutSecond, String... cmd) throws ExecCommandException;
 
     /**
      * Exec a command without timeout
@@ -19,6 +19,6 @@ public interface ExecService {
      * @return
      * @throws ExecCommandException
      */
-    CommandOutput exec(String... cmd) throws ExecCommandException;
+    CommandOutput execCommand(String... cmd) throws ExecCommandException;
 
 }
