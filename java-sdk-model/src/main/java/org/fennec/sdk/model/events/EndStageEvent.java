@@ -13,9 +13,11 @@ import org.fennec.sdk.model.commons.TestReport;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @JsonPropertyOrder({ "apiVersion", "kind", "timestamp", "stage", "reason", "testResults", })
 @Accessors(prefix = { "_", "" })
 @ToString
+@Builder
 public class EndStageEvent implements StageEvent {
 
     public static final String API_VERSION = "v1";

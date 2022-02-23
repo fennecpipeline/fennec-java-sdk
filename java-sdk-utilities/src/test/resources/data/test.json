@@ -1,0 +1,12 @@
+{
+  "hello": {
+    "french": "bonjour",
+    "italian": "buongiorno",
+    "spanish": "buenos dias"
+  },
+  "goodbye": {
+    "french": "au revoir",
+    "italian": "arrivederci",
+    "spanish": "adios"
+  }
+}

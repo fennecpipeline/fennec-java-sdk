@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd"
+           version="3.0" name="org.fennec.rest.json.HelloResourceTest" time="3.32" tests="2" errors="0" skipped="0"
+           failures="0">
+    <properties>
+        <property name="sun.desktop" value="gnome"/>
+        <property name="io.netty.machineId" value="17:ef:17:fa:c5:34:1f:61"/>
+        <property name="java.class.version" value="60.0"/>
+    </properties>
+    <testcase name="testHelloJohn" classname="org.fennec.rest.json.HelloResourceTest" time="0.834">
+        <system-out><![CDATA[2022-02-11 14:23:15,420 INFO  [io.quarkus] (main) Quarkus 2.6.3.Final on JVM started in 1.216s. Listening on: http://localhost:8888
+2022-02-11 14:23:15,421 INFO  [io.quarkus] (main) Profile test activated. 
+2022-02-11 14:23:15,421 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy, resteasy-jackson, smallrye-context-propagation, vertx]
+]]></system-out>
+    </testcase>
+    <testcase name="testHelloWorld" classname="org.fennec.rest.json.HelloResourceTest" time="0.008"/>
+</testsuite>

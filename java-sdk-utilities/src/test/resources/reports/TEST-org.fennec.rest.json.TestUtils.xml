@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd"
+           version="3.0" name="org.fennec.rest.json.TestUtils" time="0.01" tests="2" errors="0" skipped="0"
+           failures="1">
+    <properties>
+        <property name="sun.desktop" value="gnome"/>
+        <property name="io.netty.machineId" value="a1:45:3e:84:51:24:7e:e9"/>
+        <property name="java.class.version" value="60.0"/>
+    </properties>
+    <testcase name="capitalizeLower" classname="org.fennec.rest.json.TestUtils" time="0.008">
+        <failure type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <Foo> but was: <Foos>
+	at org.fennec.rest.json.TestUtils.capitalizeLower(TestUtils.java:11)
+]]></failure>
+    </testcase>
+    <testcase name="capitalizeLower2" classname="org.fennec.rest.json.TestUtils" time="0.008">
+        <rerunFailure type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <Bar> but was: <Bars>
+	at org.fennec.rest.json.TestUtils.capitalizeLower2(TestUtils.java:21)
+]]></rerunFailure>
+    </testcase>
+    <testcase name="capitalizeLower3" classname="org.fennec.rest.json.TestUtils" time="0.008">
+        <flakyFailure type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <John> but was: <Johns>
+	at org.fennec.rest.json.TestUtils.capitalizeLower3(TestUtils.java:31)
+]]></flakyFailure>
+    </testcase>
+    <testcase name="capitalizeLower4" classname="org.fennec.rest.json.TestUtils" time="0.001">
+        <rerunError type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Noooo
+	at org.fennec.rest.json.TestUtils.capitalizeLower4(TestUtils.java:42)
+]]></rerunError>
+    </testcase>
+    <testcase name="capitalizeLower5" classname="org.fennec.rest.json.TestUtils" time="0.001">
+        <error type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Noooo
+	at org.fennec.rest.json.TestUtils.capitalizeLower5(TestUtils.java:52)
+]]></error>
+    </testcase>
+    <testcase name="capitalizeLower6" classname="org.fennec.rest.json.TestUtils" time="0.001">
+        <flakyError type="java.lang.IllegalStateException"><![CDATA[java.lang.IllegalStateException: Noooo
+	at org.fennec.rest.json.TestUtils.capitalizeLower6(TestUtils.java:62)
+]]></flakyError>
+    </testcase>
+    <testcase name="capitalizeUpper" classname="org.fennec.rest.json.TestUtils" time="0">
+        <skipped/>
+    </testcase>
+</testsuite>

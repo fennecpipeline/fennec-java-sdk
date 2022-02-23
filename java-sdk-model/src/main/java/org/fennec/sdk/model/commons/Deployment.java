@@ -36,7 +36,7 @@ public class Deployment {
      * Instantiate a deployment
      *
      * @param target: the deployment target
-     * @param type: the deployment type
+     * @param type:   the deployment type
      */
     public Deployment(String target, DeploymentType type) {
         super();
@@ -48,10 +48,10 @@ public class Deployment {
     /**
      * Instantiate a deployment with a target and an indicator
      *
-     * @param target: the deployment target
-     * @param indicator: an indicator (ie: region)
+     * @param target:         the deployment target
+     * @param indicator:      an indicator (ie: region)
      * @param valueIndicator: the value for this indicator (ie: eu-west-1)
-     * @param type: the deployment type
+     * @param type:           the deployment type
      */
     public Deployment(String target, String indicator, String valueIndicator, DeploymentType type) {
         super();

@@ -12,9 +12,11 @@ import lombok.experimental.Accessors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @JsonPropertyOrder({ "apiVersion", "kind", "timestamp", "displayName", })
 @Accessors(prefix = { "_", "" })
 @ToString
+@Builder
 public class UpdateJobEvent implements TimestampedEvent {
 
     public static final String API_VERSION = "v1";
