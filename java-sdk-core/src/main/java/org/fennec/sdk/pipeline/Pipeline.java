@@ -58,7 +58,7 @@ public class Pipeline {
      *
      * <pre>
      *
-     * stage("Stage name", (context) -> {
+     * stage("Stage name", (context) -&gt; {
      *   // logic here
      * });
      *
@@ -85,9 +85,9 @@ public class Pipeline {
      * <pre>
      *
      * parallel("Parallel Name", Map.of(
-     *    "Stage 1a", (context) -> {
+     *    "Stage 1a", (context) -&gt; {
      *    },
-     *    "Stage 1b", (context) -> {
+     *    "Stage 1b", (context) -&gt; {
      *    });
      * </pre>
      *
@@ -103,7 +103,7 @@ public class Pipeline {
      *
      * <pre>
      *
-     * deploy("staging", (context) -> {
+     * deploy("staging", (context) -&gt; {
      *   // logic here
      * });
      *
@@ -122,10 +122,10 @@ public class Pipeline {
      * <pre>
      *
      * deploy("staging",
-     *     (context) -> {
+     *     (context) -&gt; {
      *       // logic here
      *     },
-     *     (context) -> {
+     *     (context) -&gt; {
      *       // rollback logic goes here
      *     });
      *
@@ -145,10 +145,10 @@ public class Pipeline {
      * <pre>
      *
      * deploy("staging", "region", Map.of(
-     *    "eu-west-1", (context) -> {
+     *    "eu-west-1", (context) -&gt; {
      *      // deployment staging to eu-west-1
      *    },
-     *    "eu-east-1", (context) -> {
+     *    "eu-east-1", (context) -&gt; {
      *       // deployment staging to eu-east-1
      *    });
      * </pre>
@@ -169,17 +169,17 @@ public class Pipeline {
      *
      * deploy("staging", "region",
      *     Map.of(
-     *         "eu-west-1", (context) -> {
+     *         "eu-west-1", (context) -&gt; {
      *           // deployment staging to eu-west-1
      *         },
-     *         "eu-east-1", (context) -> {
+     *         "eu-east-1", (context) -&gt; {
      *           // deployment staging to eu-east-1
      *         }),
      *     Map.of(
-     *         "eu-west-1", (context) -> {
+     *         "eu-west-1", (context) -&gt; {
      *           // Rollback staging eu-west-1
      *         },
-     *         "eu-east-1", (context) -> {
+     *         "eu-east-1", (context) -&gt; {
      *           // Rollback staging to eu-east-1
      *         }));
      *
@@ -210,10 +210,10 @@ public class Pipeline {
      * <pre>
      *
      * pipeline()
-     *     .execStage("Stage one", (context) -> {
+     *     .execStage("Stage one", (context) -&gt; {
      *       // logic here
      *     })
-     *     .execStage("Stage two", (context) -> {
+     *     .execStage("Stage two", (context) -&gt; {
      *       // logic here
      *     });
      *
@@ -247,9 +247,9 @@ public class Pipeline {
      *
      * pipeline()
      * .parallel("Parallel Name", Map.of(
-     *    "Stage 1a", (context) -> {
+     *    "Stage 1a", (context) -&gt; {
      *    },
-     *    "Stage 1b", (context) -> {
+     *    "Stage 1b", (context) -&gt; {
      *    });
      * </pre>
      *
@@ -262,7 +262,7 @@ public class Pipeline {
                 .entrySet()
                 .stream()
                 .map(e -> new ExecStage(e.getKey(), parallelName, e.getValue()))
-                .toList())) {
+                .collect(Collectors.toList()))) {
             failPipeline.run();
         }
         return this;
@@ -274,7 +274,7 @@ public class Pipeline {
      * <pre>
      *
      * pipeline().execDeployment("staging",
-     *     (context) -> {
+     *     (context) -&gt; {
      *       // logic here
      *     });
      *
@@ -299,10 +299,10 @@ public class Pipeline {
      * <pre>
      *
      * pipeline().execDeployment("staging",
-     *     (context) -> {
+     *     (context) -&gt; {
      *       // logic here
      *     },
-     *     (context) -> {
+     *     (context) -&gt; {
      *       // rollback logic goes here
      *     });
      *
@@ -334,10 +334,10 @@ public class Pipeline {
      *
      * pipeline()
      * .execDeployment("staging", "region", Map.of(
-     *    "eu-west-1", (context) -> {
+     *    "eu-west-1", (context) -&gt; {
      *      // deployment staging to eu-west-1
      *    },
-     *    "eu-east-1", (context) -> {
+     *    "eu-east-1", (context) -&gt; {
      *       // deployment staging to eu-east-1
      *    });
      * </pre>
@@ -356,7 +356,7 @@ public class Pipeline {
                         DEPLOY_TO + target,
                         new Deployment(target, indicator, e.getKey(), DeploymentType.LOAD),
                         e.getValue()))
-                .toList();
+                .collect(Collectors.toList());
         if (!runParallelStages(stages)) {
             failPipeline.run();
         }
@@ -372,17 +372,17 @@ public class Pipeline {
      * pipeline()
      *     .execDeployment("staging", "region",
      *         Map.of(
-     *             "eu-west-1", (context) -> {
+     *             "eu-west-1", (context) -&gt; {
      *               // deployment staging to eu-west-1
      *             },
-     *             "eu-east-1", (context) -> {
+     *             "eu-east-1", (context) -&gt; {
      *               // deployment staging to eu-east-1
      *             }),
      *         Map.of(
-     *             "eu-west-1", (context) -> {
+     *             "eu-west-1", (context) -&gt; {
      *               // Rollback staging eu-west-1
      *             },
-     *             "eu-east-1", (context) -> {
+     *             "eu-east-1", (context) -&gt; {
      *               // Rollback staging to eu-east-1
      *             }));
      *
@@ -403,8 +403,8 @@ public class Pipeline {
             // Create a failing stage
             runSimpleStage(new ExecStage(String.format("Deploy to %s", target), (context) -> {
                 Fail.fail(String.format("Parallel rollback (%s) must contains the same keys as Parallel deployment (%s)",
-                        parallelDeployments.keySet().stream().sorted().toList(),
-                        parallelRollbacks.keySet().stream().sorted().toList()));
+                        parallelDeployments.keySet().stream().sorted().collect(Collectors.toList()),
+                        parallelRollbacks.keySet().stream().sorted().collect(Collectors.toList())));
             }));
             failPipeline.run();
         }
@@ -416,7 +416,7 @@ public class Pipeline {
                         DEPLOY_TO + target,
                         new Deployment(target, indicator, e.getKey(), DeploymentType.LOAD),
                         e.getValue()))
-                .toList();
+                .collect(Collectors.toList());
         boolean success = runParallelStages(stages);
         if (!success) {
             List<ExecStage> rollbackStages = parallelRollbacks
@@ -426,7 +426,7 @@ public class Pipeline {
                             "Rollback " + target,
                             new Deployment(target, indicator, e.getKey(), DeploymentType.ROLLBACK),
                             e.getValue()))
-                    .toList();
+                    .collect(Collectors.toList());
             runParallelStages(rollbackStages);
             failPipeline.run();
         }

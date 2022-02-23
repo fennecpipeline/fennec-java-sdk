@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import org.fennec.sdk.model.commons.TestReport;
 
 /**
- * An event representing the end of a stage<br/>
+ * An event representing the end of a stage<br>
  * <i>It is not a Kubernetes Resource. The format is similar for usability</i>
  */
 @Getter

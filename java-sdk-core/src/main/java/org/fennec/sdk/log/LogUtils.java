@@ -64,7 +64,7 @@ public class LogUtils {
                         .stream()
                         .filter(e -> e.getKey().startsWith(SECRET))
                         .map(Entry::getValue)
-                        .toList());
+                        .collect(Collectors.toList()));
     }
 
     /**

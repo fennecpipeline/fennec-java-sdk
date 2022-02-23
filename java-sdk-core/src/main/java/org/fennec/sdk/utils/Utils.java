@@ -18,8 +18,7 @@ public final class Utils {
 
     /**
      * Pipeline execution folder is project/.kubepipeline
-     *
-     * @return
+     * @return the project folder
      */
     public static String getProjectFolder() {
         String userDir = System.getProperty("user.dir");

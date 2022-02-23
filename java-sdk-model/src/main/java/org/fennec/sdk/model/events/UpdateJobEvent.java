@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
- * An event representing an update of the current Job<br/>
+ * An event representing an update of the current Job<br>
  * <i>It is not a Kubernetes Resource. The format is similar for usability</i>
  */
 @Getter

@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import org.slf4j.event.Level;
 
 /**
- * An event representing a log in a stage<br/>
+ * An event representing a log in a stage<br>
  * <i>It is not a Kubernetes Resource. The format is similar for usability</i>
  */
 @Getter

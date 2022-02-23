@@ -58,6 +58,6 @@ public class EventTestsUtils {
                 .stream()
                 .filter(event -> type.isInstance(event))
                 .map(event -> (T) event)
-                .toList();
+                .collect(Collectors.toList());
     }
 }

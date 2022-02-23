@@ -35,7 +35,7 @@ public class Surefire {
                 .asList(new File(reportPath).listFiles((dir, name) -> name.endsWith(".xml")))
                 .stream()
                 .map(this::toTestSuiteResult)
-                .toList());
+                .collect(Collectors.toList()));
         return testResults;
     }
 
