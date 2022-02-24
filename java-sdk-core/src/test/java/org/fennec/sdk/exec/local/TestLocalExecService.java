@@ -120,11 +120,15 @@ class TestLocalExecService {
 
         pipelineMustHaveFail.get(100, TimeUnit.MILLISECONDS);
 
-        assertThat(events, hasSize(2));
+        assertThat(events, hasSize(3));
         testStartStageEvent(events.get(0), "Init", null, null);
-        testEndStageEvent(events.get(1),
+        testStageLogEvent(events.get(1),
                 "Init",
-                "org.fennec.sdk.error.CancelJobException: Error during init: Exec Command [fovhofv, hioihve] failed with error",
+                Level.ERROR,
+                "org.fennec.sdk.error.CancelJobException: Error during init: Exec Command [fovhofv, hioihve] failed with error");
+        testEndStageEvent(events.get(2),
+                "Init",
+                "Caught Exception while executing \"Init\": Error during init: Exec Command [fovhofv, hioihve] failed with error",
                 null);
     }
 
@@ -159,12 +163,16 @@ class TestLocalExecService {
 
         pipelineMustHaveFail.get(100, TimeUnit.MILLISECONDS);
 
-        assertThat(events, hasSize(3));
+        assertThat(events, hasSize(4));
         testStartStageEvent(events.get(0), "Init", null, null);
         testStageLogEvent(events.get(1), "Init", Level.INFO, "Hello from failing script");
-        testEndStageEvent(events.get(2),
+        testStageLogEvent(events.get(2),
                 "Init",
-                "org.fennec.sdk.error.CancelJobException: Error during init: Exec Command [/bin/sh, src/test/resources/failing-script.sh] failed with status 128. Output \nHello from failing script",
+                Level.ERROR,
+                "org.fennec.sdk.error.CancelJobException: Error during init: Exec Command");
+        testEndStageEvent(events.get(3),
+                "Init",
+                "Caught Exception while executing \"Init\": Error during init: Exec Command [/bin/sh, src/test/resources/failing-script.sh] failed with status 128. Output \nHello from failing script",
                 null);
     }
 
@@ -198,11 +206,15 @@ class TestLocalExecService {
 
         pipelineMustHaveFail.get(100, TimeUnit.MILLISECONDS);
 
-        assertThat(events, hasSize(2));
+        assertThat(events, hasSize(3));
         testStartStageEvent(events.get(0), "Init", null, null);
-        testEndStageEvent(events.get(1),
+        testStageLogEvent(events.get(1),
                 "Init",
-                "org.fennec.sdk.error.CancelJobException: Error during init: Exec Command [sleep, 10] failed with Timeout after 1s",
+                Level.ERROR,
+                "org.fennec.sdk.error.CancelJobException: Error during init: Exec Command [sleep, 10] failed with Timeout after 1s");
+        testEndStageEvent(events.get(2),
+                "Init",
+                "Caught Exception while executing \"Init\": Error during init: Exec Command [sleep, 10] failed with Timeout after 1s",
                 null);
     }
 }

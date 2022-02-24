@@ -2,6 +2,7 @@ package org.fennec.sdk.pipeline;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.fennec.sdk.error.Fail;
 import org.fennec.sdk.model.commons.Deployment;
 import org.fennec.sdk.model.commons.DeploymentType;
@@ -14,6 +15,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class Pipeline {
 
@@ -96,7 +98,7 @@ public class Pipeline {
      * </pre>
      *
      * @param name the link name
-     * @param url the link url
+     * @param url  the link url
      * @param logo the link logo
      */
     public static void link(String name, String url, String logo) {
@@ -527,6 +529,7 @@ public class Pipeline {
             }
             return completableFutures.stream().map(CompletableFuture::join).allMatch(Boolean::valueOf);
         } catch (Exception e) {
+            log.error("Caught exception while executing Parallel \"{}\" ", execStages.get(0).getParallel(), e);
             return false;
         } finally {
             MDC.clear();
@@ -558,6 +561,7 @@ public class Pipeline {
             }
             return true;
         } catch (Exception e) {
+            log.error("Caught exception while executing \"{}\" ", stage.getName(), e);
             eventPublisher.error(stage.getName(), e, context.getTestResults());
             return false;
         } finally {

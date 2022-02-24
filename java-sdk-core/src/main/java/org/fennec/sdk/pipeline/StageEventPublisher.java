@@ -26,19 +26,6 @@ public class StageEventPublisher {
     private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("fennec-print-events");
 
     /**
-     * Format the exception to a string
-     *
-     * @param t the throwable to format
-     * @return the exception to display
-     */
-    private static String formatException(Throwable t) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        t.printStackTrace(pw);
-        return sw.toString();
-    }
-
-    /**
      * Update job
      *
      * @param newName the new name
@@ -77,7 +64,7 @@ public class StageEventPublisher {
      * @param testReport the test report
      */
     public void error(String stageName, Throwable t, TestReport testReport) {
-        printStageEvent(new EndStageEvent(System.currentTimeMillis(), stageName, formatException(t), testReport));
+        printStageEvent(new EndStageEvent(System.currentTimeMillis(), stageName, "Caught Exception while executing \"" + stageName + "\": " + t.getMessage(), testReport));
     }
 
     /**

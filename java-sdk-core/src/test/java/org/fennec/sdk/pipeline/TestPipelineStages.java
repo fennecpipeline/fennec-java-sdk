@@ -88,12 +88,7 @@ class TestPipelineStages {
 
     @Test
     void testAddLink2() {
-        link(Link
-                .builder()
-                .name("Sonar")
-                .url("http://localhost:9000")
-                .logo("http://logo.sonar.com")
-                .build());
+        link(Link.builder().name("Sonar").url("http://localhost:9000").logo("http://logo.sonar.com").build());
         assertThat(testingEventAppender.getUnmatched(), empty());
         assertThat(testingEventAppender.getInError(), empty());
 
@@ -150,9 +145,13 @@ class TestPipelineStages {
             List<TimestampedEvent> events = testingEventAppender.getEvents();
             assertThat(testingEventAppender.getUnmatched(), empty());
             assertThat(testingEventAppender.getInError(), empty());
-            assertThat(events, hasSize(2));
+            assertThat(events, hasSize(3));
             testStartStageEvent(events.get(0), "Init", null, null);
-            testEndStageEvent(events.get(1), "Init", "java.lang.IllegalStateException: An error occurred", null);
+            testStageLogEvent(events.get(1), "Init", Level.ERROR, "java.lang.IllegalStateException: An error occurred");
+            testEndStageEvent(events.get(2),
+                    "Init",
+                    "Caught Exception while executing \"Init\": An error occurred",
+                    null);
             completableFuture.complete(null);
         });
 
@@ -205,14 +204,14 @@ class TestPipelineStages {
             assertThat(testingEventAppender.getInError(), empty());
 
             List<TimestampedEvent> events = testingEventAppender.getEvents();
-            assertThat(events, hasSize(6));
+            assertThat(events, hasSize(7));
 
             List<StartStageEvent> startStageEvents = getEventsForType(events, StartStageEvent.class);
             List<EndStageEvent> endStageEvents = getEventsForType(events, EndStageEvent.class);
             List<StageLogEvent> stageLogEvents = getEventsForType(events, StageLogEvent.class);
             assertThat(startStageEvents, hasSize(2));
             assertThat(endStageEvents, hasSize(2));
-            assertThat(stageLogEvents, hasSize(2));
+            assertThat(stageLogEvents, hasSize(3));
 
             // check order of execution
             // Start stage event order does not matter
@@ -232,13 +231,21 @@ class TestPipelineStages {
             assertThat(events.get(2), equalTo(stageLogEvents.get(0)));
             assertThat(events.get(3), equalTo(endStageEvents.get(0)));
             assertThat(events.get(4), equalTo(stageLogEvents.get(1)));
-            assertThat(events.get(5), equalTo(endStageEvents.get(1)));
+            assertThat(events.get(5), equalTo(stageLogEvents.get(2)));
+            assertThat(events.get(6), equalTo(endStageEvents.get(1)));
 
             testStageLogEvent(events.get(2), "Security", Level.INFO, "A log in Security");
             testEndStageEvent(events.get(3), "Security", null, null);
 
             testStageLogEvent(events.get(4), "Sonar", Level.INFO, "A log in Sonar");
-            testEndStageEvent(events.get(5), "Sonar", "java.lang.IllegalStateException: An error occurred", null);
+            testStageLogEvent(events.get(5),
+                    "Sonar",
+                    Level.ERROR,
+                    "java.lang.IllegalStateException: An error occurred");
+            testEndStageEvent(events.get(6),
+                    "Sonar",
+                    "Caught Exception while executing \"Sonar\": An error occurred",
+                    null);
             completableFuture.complete(null);
         });
 
@@ -345,14 +352,18 @@ class TestPipelineStages {
             List<TimestampedEvent> events = testingEventAppender.getEvents();
             assertThat(testingEventAppender.getUnmatched(), empty());
             assertThat(testingEventAppender.getInError(), empty());
-            assertThat(events, hasSize(2));
+            assertThat(events, hasSize(3));
             testStartStageEvent(events.get(0),
                     "Deploy to staging",
                     null,
                     new Deployment("staging", DeploymentType.LOAD));
-            testEndStageEvent(events.get(1),
+            testStageLogEvent(events.get(1),
                     "Deploy to staging",
-                    "java.lang.IllegalStateException: An error occurred",
+                    Level.ERROR,
+                    "java.lang.IllegalStateException: An error occurred");
+            testEndStageEvent(events.get(2),
+                    "Deploy to staging",
+                    "Caught Exception while executing \"Deploy to staging\": An error occurred",
                     null);
             completableFuture.complete(null);
         });
@@ -392,14 +403,14 @@ class TestPipelineStages {
             assertThat(testingEventAppender.getInError(), empty());
 
             List<TimestampedEvent> events = testingEventAppender.getEvents();
-            assertThat(events, hasSize(6));
+            assertThat(events, hasSize(7));
 
             List<StartStageEvent> startStageEvents = getEventsForType(events, StartStageEvent.class);
             List<EndStageEvent> endStageEvents = getEventsForType(events, EndStageEvent.class);
             List<StageLogEvent> stageLogEvents = getEventsForType(events, StageLogEvent.class);
             assertThat(startStageEvents, hasSize(2));
             assertThat(endStageEvents, hasSize(2));
-            assertThat(stageLogEvents, hasSize(2));
+            assertThat(stageLogEvents, hasSize(3));
 
             // check order of execution
             // Start stage event order does not matter
@@ -431,7 +442,8 @@ class TestPipelineStages {
             assertThat(events.get(2), equalTo(stageLogEvents.get(0)));
             assertThat(events.get(3), equalTo(endStageEvents.get(0)));
             assertThat(events.get(4), equalTo(stageLogEvents.get(1)));
-            assertThat(events.get(5), equalTo(endStageEvents.get(1)));
+            assertThat(events.get(5), equalTo(stageLogEvents.get(2)));
+            assertThat(events.get(6), equalTo(endStageEvents.get(1)));
 
             testStageLogEvent(events.get(2),
                     "Deploy to staging (eu-west-2)",
@@ -443,9 +455,13 @@ class TestPipelineStages {
                     "Deploy to staging (eu-west-1)",
                     Level.INFO,
                     "A log in staging deployment eu-west-1");
-            testEndStageEvent(events.get(5),
+            testStageLogEvent(events.get(5),
                     "Deploy to staging (eu-west-1)",
-                    "java.lang.IllegalStateException: An error occurred",
+                    Level.ERROR,
+                    "java.lang.IllegalStateException: An error occurred");
+            testEndStageEvent(events.get(6),
+                    "Deploy to staging (eu-west-1)",
+                    "Caught Exception while executing \"Deploy to staging (eu-west-1)\": An error occurred",
                     null);
             completableFuture.complete(null);
         });
@@ -554,21 +570,25 @@ class TestPipelineStages {
             List<TimestampedEvent> events = testingEventAppender.getEvents();
             assertThat(testingEventAppender.getUnmatched(), empty());
             assertThat(testingEventAppender.getInError(), empty());
-            assertThat(events, hasSize(5));
+            assertThat(events, hasSize(6));
             testStartStageEvent(events.get(0),
                     "Deploy to staging",
                     null,
                     new Deployment("staging", DeploymentType.LOAD));
-            testEndStageEvent(events.get(1),
+            testStageLogEvent(events.get(1),
                     "Deploy to staging",
-                    "java.lang.IllegalStateException: An error occurred",
+                    Level.ERROR,
+                    "java.lang.IllegalStateException: An error occurred");
+            testEndStageEvent(events.get(2),
+                    "Deploy to staging",
+                    "Caught Exception while executing \"Deploy to staging\": An error occurred",
                     null);
-            testStartStageEvent(events.get(2),
+            testStartStageEvent(events.get(3),
                     "Rollback staging",
                     null,
                     new Deployment("staging", DeploymentType.ROLLBACK));
-            testStageLogEvent(events.get(3), "Rollback staging", Level.INFO, "Rollback!!!");
-            testEndStageEvent(events.get(4), "Rollback staging", null, null);
+            testStageLogEvent(events.get(4), "Rollback staging", Level.INFO, "Rollback!!!");
+            testEndStageEvent(events.get(5), "Rollback staging", null, null);
             completableFuture.complete(null);
         });
 
@@ -590,11 +610,15 @@ class TestPipelineStages {
             List<TimestampedEvent> events = testingEventAppender.getEvents();
             assertThat(testingEventAppender.getUnmatched(), empty());
             assertThat(testingEventAppender.getInError(), empty());
-            assertThat(events, hasSize(2));
+            assertThat(events, hasSize(3));
             testStartStageEvent(events.get(0), "Deploy to staging", null, null);
-            testEndStageEvent(events.get(1),
+            testStageLogEvent(events.get(1),
                     "Deploy to staging",
-                    "org.fennec.sdk.error.CancelJobException: Parallel rollback ([eu-west-1, eu-west-2]) must contains the same keys as Parallel deployment ([eu-west-1, us-east-1])",
+                    Level.ERROR,
+                    "org.fennec.sdk.error.CancelJobException: Parallel rollback ([eu-west-1, eu-west-2]) must contains the same keys as Parallel deployment ([eu-west-1, us-east-1])");
+            testEndStageEvent(events.get(2),
+                    "Deploy to staging",
+                    "Caught Exception while executing \"Deploy to staging\": Parallel rollback ([eu-west-1, eu-west-2]) must contains the same keys as Parallel deployment ([eu-west-1, us-east-1])",
                     null);
             completableFuture.complete(null);
         });
@@ -644,14 +668,14 @@ class TestPipelineStages {
             assertThat(testingEventAppender.getInError(), empty());
 
             List<TimestampedEvent> events = testingEventAppender.getEvents();
-            assertThat(events, hasSize(12));
+            assertThat(events, hasSize(13));
 
             List<StartStageEvent> startStageEvents = getEventsForType(events, StartStageEvent.class);
             List<EndStageEvent> endStageEvents = getEventsForType(events, EndStageEvent.class);
             List<StageLogEvent> stageLogEvents = getEventsForType(events, StageLogEvent.class);
             assertThat(startStageEvents, hasSize(4));
             assertThat(endStageEvents, hasSize(4));
-            assertThat(stageLogEvents, hasSize(4));
+            assertThat(stageLogEvents, hasSize(5));
 
             // check order of execution
             // Start stage event order does not matter
@@ -683,26 +707,30 @@ class TestPipelineStages {
             assertThat(events.get(2), equalTo(stageLogEvents.get(0)));
             assertThat(events.get(3), equalTo(endStageEvents.get(0)));
             assertThat(events.get(4), equalTo(stageLogEvents.get(1)));
-            assertThat(events.get(5), equalTo(endStageEvents.get(1)));
+            assertThat(events.get(5), equalTo(stageLogEvents.get(2)));
+            assertThat(events.get(6), equalTo(endStageEvents.get(1)));
 
             testStageLogEvent(events.get(2),
                     "Deploy to staging (eu-west-2)",
                     Level.INFO,
                     "A log in staging deployment eu-west-2");
             testEndStageEvent(events.get(3), "Deploy to staging (eu-west-2)", null, null);
-
             testStageLogEvent(events.get(4),
                     "Deploy to staging (eu-west-1)",
                     Level.INFO,
                     "A log in staging deployment eu-west-1");
-            testEndStageEvent(events.get(5),
+            testStageLogEvent(events.get(5),
                     "Deploy to staging (eu-west-1)",
-                    "java.lang.IllegalStateException: An error occurred",
+                    Level.ERROR,
+                    "java.lang.IllegalStateException: An error occurred");
+            testEndStageEvent(events.get(6),
+                    "Deploy to staging (eu-west-1)",
+                    "Caught Exception while executing \"Deploy to staging (eu-west-1)\": An error occurred",
                     null);
 
 
-            assertThat(events.indexOf(startStageEvents.get(2)), anyOf(equalTo(6), equalTo(7)));
-            assertThat(events.indexOf(startStageEvents.get(3)), anyOf(equalTo(6), equalTo(7)));
+            assertThat(events.indexOf(startStageEvents.get(2)), anyOf(equalTo(7), equalTo(8)));
+            assertThat(events.indexOf(startStageEvents.get(3)), anyOf(equalTo(8), equalTo(7)));
 
             if (startStageEvents.get(2).getStage().equals("Rollback staging (eu-west-1)")) {
                 testStartStageEvent(startStageEvents.get(2),
@@ -725,22 +753,22 @@ class TestPipelineStages {
             }
 
             // The log and end stage for Deploy to staging (eu-west-2) must appear before Deploy to staging (eu-west-1) one
-            assertThat(events.get(8), equalTo(stageLogEvents.get(2)));
-            assertThat(events.get(9), equalTo(endStageEvents.get(2)));
-            assertThat(events.get(10), equalTo(stageLogEvents.get(3)));
-            assertThat(events.get(11), equalTo(endStageEvents.get(3)));
+            assertThat(events.get(9), equalTo(stageLogEvents.get(3)));
+            assertThat(events.get(10), equalTo(endStageEvents.get(2)));
+            assertThat(events.get(11), equalTo(stageLogEvents.get(4)));
+            assertThat(events.get(12), equalTo(endStageEvents.get(3)));
 
-            testStageLogEvent(events.get(8),
+            testStageLogEvent(events.get(9),
                     "Rollback staging (eu-west-2)",
                     Level.INFO,
                     "A log in staging rollback eu-west-2");
-            testEndStageEvent(events.get(9), "Rollback staging (eu-west-2)", null, null);
+            testEndStageEvent(events.get(10), "Rollback staging (eu-west-2)", null, null);
 
-            testStageLogEvent(events.get(10),
+            testStageLogEvent(events.get(11),
                     "Rollback staging (eu-west-1)",
                     Level.INFO,
                     "A log in staging rollback eu-west-1");
-            testEndStageEvent(events.get(11), "Rollback staging (eu-west-1)", null, null);
+            testEndStageEvent(events.get(12), "Rollback staging (eu-west-1)", null, null);
 
             completableFuture.complete(null);
         });
