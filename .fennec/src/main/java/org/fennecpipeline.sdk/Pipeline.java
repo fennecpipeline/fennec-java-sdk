@@ -71,9 +71,9 @@ public class Pipeline {
                 git.add().addFilepattern(".").call();
                 git.commit().setMessage("Version " + context.getVersion()).call();
                 git.tag().setName(context.getVersion()).call();
-                git.push().setPushAll().setPushTags().call();
+                git.push().setPushTags().call();
             } catch (Exception e) {
-                fail("Unable to tear down");
+                fail("Unable to Complete release", e);
             }
         });
 
