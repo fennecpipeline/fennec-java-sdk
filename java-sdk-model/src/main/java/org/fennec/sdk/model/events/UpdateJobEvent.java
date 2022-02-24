@@ -3,6 +3,9 @@ package org.fennec.sdk.model.events;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.fennec.sdk.model.commons.Link;
+
+import java.util.List;
 
 /**
  * An event representing an update of the current Job<br>
@@ -36,5 +39,12 @@ public class UpdateJobEvent implements TimestampedEvent {
      * The new Job display name
      */
     private String displayName;
+
+    /**
+     * Some links to add to the jobs
+     * It uses append.
+     * If called a first time with two links and another one with three others. The final job will contain 5 links
+     */
+    private List<Link> links;
 
 }

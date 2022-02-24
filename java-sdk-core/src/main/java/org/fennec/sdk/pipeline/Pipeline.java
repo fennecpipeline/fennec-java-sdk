@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.fennec.sdk.error.Fail;
 import org.fennec.sdk.model.commons.Deployment;
 import org.fennec.sdk.model.commons.DeploymentType;
+import org.fennec.sdk.model.commons.Link;
 import org.fennec.sdk.pipeline.model.ExecStage;
 import org.fennec.sdk.pipeline.model.SimpleStageHandler;
 import org.slf4j.MDC;
@@ -53,6 +54,53 @@ public class Pipeline {
      */
     public static void rename(String newName) {
         pipeline().renamePipeline(newName);
+    }
+
+    /**
+     * Using static import add links
+     *
+     * <pre>
+     *
+     * links(Arrays.asList(new Link("name", "url", "logo")));
+     *
+     * </pre>
+     *
+     * @param links the links to add
+     */
+    public static void links(List<Link> links) {
+        pipeline().addLinks(links);
+    }
+
+    /**
+     * Using static import add link
+     *
+     * <pre>
+     *
+     * link(new Link("name", "url", "logo"));
+     *
+     * </pre>
+     *
+     * @param link the link to add
+     */
+    public static void link(Link link) {
+        pipeline().addLink(link);
+    }
+
+    /**
+     * Using static import add link
+     *
+     * <pre>
+     *
+     * link("name", "url", "logo");
+     *
+     * </pre>
+     *
+     * @param name the link name
+     * @param url the link url
+     * @param logo the link logo
+     */
+    public static void link(String name, String url, String logo) {
+        pipeline().addLink(name, url, logo);
     }
 
     /**
@@ -203,7 +251,36 @@ public class Pipeline {
      * @param newName the new pipeline display name
      */
     public void renamePipeline(String newName) {
-        eventPublisher.updateJob(newName);
+        eventPublisher.updateJob(newName, Collections.emptyList());
+    }
+
+    /**
+     * Add links
+     *
+     * @param links the links to add to job
+     */
+    public void addLinks(List<Link> links) {
+        eventPublisher.updateJob(null, links);
+    }
+
+    /**
+     * Add link
+     *
+     * @param link the links to add to job
+     */
+    public void addLink(Link link) {
+        eventPublisher.updateJob(null, Arrays.asList(link));
+    }
+
+    /**
+     * Add link
+     *
+     * @param name the link name
+     * @param url  the link url
+     * @param logo the logo url
+     */
+    public void addLink(String name, String url, String logo) {
+        eventPublisher.updateJob(null, Arrays.asList(Link.builder().name(name).url(url).logo(logo).build()));
     }
 
     /**

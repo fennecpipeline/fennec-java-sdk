@@ -3,6 +3,7 @@ package org.fennec.sdk.testing.utils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.fennec.sdk.model.commons.Deployment;
+import org.fennec.sdk.model.commons.Link;
 import org.fennec.sdk.model.commons.TestReport;
 import org.fennec.sdk.model.events.*;
 import org.slf4j.event.Level;
@@ -49,8 +50,15 @@ public class EventTestsUtils {
     public static void testUpdateJobEvent(TimestampedEvent timestampedEvent, String displayName) {
         assertThat(timestampedEvent, instanceOf(UpdateJobEvent.class));
         UpdateJobEvent event = (UpdateJobEvent) timestampedEvent;
-        assertThat(event.getTimestamp(), lessThan(System.currentTimeMillis()));
+        assertThat(event.getTimestamp(), notNullValue()));
         assertThat(event.getDisplayName(), equalTo(displayName));
+    }
+
+    public static void testUpdateJobEvent(TimestampedEvent timestampedEvent, List<Link> links) {
+        assertThat(timestampedEvent, instanceOf(UpdateJobEvent.class));
+        UpdateJobEvent event = (UpdateJobEvent) timestampedEvent;
+        assertThat(event.getTimestamp(), notNullValue());
+        assertThat(event.getLinks(), equalTo(links));
     }
 
     public static <T extends TimestampedEvent> List<T> getEventsForType(List<TimestampedEvent> events, Class<T> type) {

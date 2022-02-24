@@ -121,6 +121,47 @@ public class MyPipeline {
 }
 ```
 
+#### Rename a pipeline
+
+```java
+public class MyPipeline {
+    
+    public static void main(String[] args) {
+        stage("Stage name", (context) -> {
+           rename("New name");
+        });
+    }
+}
+```
+
+#### Add links to pipeline
+
+```java
+public class MyPipeline {
+    
+    public static void main(String[] args) {
+        stage("Stage name", (context) -> {
+            link("Sonar", "http://localhost:9000", "http://logo.sonar.com");
+            // Or
+            link(Link
+                    .builder()
+                    .name("Sonar")
+                    .url("http://localhost:9000")
+                    .logo("http://logo.sonar.com")
+                    .build());
+            // Or
+            links(Arrays.asList(Link
+                    .builder()
+                    .name("Sonar")
+                    .url("http://localhost:9000")
+                    .logo("http://logo.sonar.com")
+                    .build()));
+            
+        });
+    }
+}
+```
+
 #### Make a pipeline fail
 
 With a message:

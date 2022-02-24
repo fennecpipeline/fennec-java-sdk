@@ -70,6 +70,67 @@ class TestPipelineStages {
     }
 
     @Test
+    void testAddLink() {
+        link("Sonar", "http://localhost:9000", "http://logo.sonar.com");
+        assertThat(testingEventAppender.getUnmatched(), empty());
+        assertThat(testingEventAppender.getInError(), empty());
+
+        List<TimestampedEvent> events = testingEventAppender.getEvents();
+        assertThat(events, hasSize(1));
+        testUpdateJobEvent(events.get(0),
+                Arrays.asList(Link
+                        .builder()
+                        .name("Sonar")
+                        .url("http://localhost:9000")
+                        .logo("http://logo.sonar.com")
+                        .build()));
+    }
+
+    @Test
+    void testAddLink2() {
+        link(Link
+                .builder()
+                .name("Sonar")
+                .url("http://localhost:9000")
+                .logo("http://logo.sonar.com")
+                .build());
+        assertThat(testingEventAppender.getUnmatched(), empty());
+        assertThat(testingEventAppender.getInError(), empty());
+
+        List<TimestampedEvent> events = testingEventAppender.getEvents();
+        assertThat(events, hasSize(1));
+        testUpdateJobEvent(events.get(0),
+                Arrays.asList(Link
+                        .builder()
+                        .name("Sonar")
+                        .url("http://localhost:9000")
+                        .logo("http://logo.sonar.com")
+                        .build()));
+    }
+
+    @Test
+    void testAddLinks() {
+        links(Arrays.asList(Link
+                .builder()
+                .name("Sonar")
+                .url("http://localhost:9000")
+                .logo("http://logo.sonar.com")
+                .build()));
+        assertThat(testingEventAppender.getUnmatched(), empty());
+        assertThat(testingEventAppender.getInError(), empty());
+
+        List<TimestampedEvent> events = testingEventAppender.getEvents();
+        assertThat(events, hasSize(1));
+        testUpdateJobEvent(events.get(0),
+                Arrays.asList(Link
+                        .builder()
+                        .name("Sonar")
+                        .url("http://localhost:9000")
+                        .logo("http://logo.sonar.com")
+                        .build()));
+    }
+
+    @Test
     void testVersionPropagated() {
         stage("Init", context -> {
             context.setVersion("1.0.0");

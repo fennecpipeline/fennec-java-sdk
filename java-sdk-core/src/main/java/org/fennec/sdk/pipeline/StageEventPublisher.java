@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.fennec.sdk.model.commons.Deployment;
+import org.fennec.sdk.model.commons.Link;
 import org.fennec.sdk.model.commons.TestReport;
 import org.fennec.sdk.model.events.*;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.slf4j.event.Level;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 /**
  * The stage event publisher is providing capability to send stages information (start, end, log) to the side car
@@ -40,9 +42,10 @@ public class StageEventPublisher {
      * Update job
      *
      * @param newName the new name
+     * @param links the links
      */
-    public void updateJob(String newName) {
-        printStageEvent(new UpdateJobEvent(System.currentTimeMillis(), newName));
+    public void updateJob(String newName, List<Link> links) {
+        printStageEvent(new UpdateJobEvent(System.currentTimeMillis(), newName, links));
     }
 
     /**
