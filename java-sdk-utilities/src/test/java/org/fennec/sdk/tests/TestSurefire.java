@@ -21,7 +21,19 @@ public class TestSurefire {
                 equalTo(TestReport
                         .builder()
                         .type("Unit tests")
-                        .suites(Arrays.asList(TestSuiteResult
+                        .suites(Arrays.asList(
+                                TestSuiteResult
+                                        .builder()
+                                        .id("org.fennec.sdk.tests.TestSurefire")
+                                        .durationMs(385L)
+                                        .tests(Arrays.asList(TestResult
+                                                .builder()
+                                                .id("testSurefire")
+                                                .durationMs(372L)
+                                                .status(TestStatus.SUCCEEDED)
+                                                .build()))
+                                        .build(),
+                                TestSuiteResult
                                         .builder()
                                         .id("org.fennec.rest.json.TestUtils")
                                         .durationMs(10L)
@@ -96,7 +108,9 @@ public class TestSurefire {
                                                         .durationMs(8L)
                                                         .status(TestStatus.SUCCEEDED)
                                                         .build()))
-                                        .build()))
+                                        .build()
+
+                                ))
                         .build()));
 
     }

@@ -43,11 +43,18 @@ public class Surefire {
         JsonNode node = XmlUtils.readXML(file);
         TestSuiteResult testSuiteResult = new TestSuiteResult();
         testSuiteResult.setId(node.get("name").asText());
-        testSuiteResult.setDurationMs((long)(Float.valueOf(node.get("time").asText()) * 1000));
+        testSuiteResult.setDurationMs((long) (Float.valueOf(node.get("time").asText()) * 1000));
         List<TestResult> testResults = new ArrayList<>();
-        node.get("testcase").forEach(testcase -> {
-            testResults.add(toTestResult(testcase));
-        });
+        JsonNode testCase = node.get("testcase");
+
+        if (testCase.isArray()) {
+            testCase.forEach(testcase -> {
+                testResults.add(toTestResult(testcase));
+            });
+        } else {
+            testResults.add(toTestResult(testCase));
+        }
+        
         testSuiteResult.setTests(testResults);
         return testSuiteResult;
     }
@@ -55,7 +62,7 @@ public class Surefire {
     private TestResult toTestResult(JsonNode node) {
         TestResult testResult = new TestResult();
         testResult.setId(node.get("name").asText());
-        testResult.setDurationMs((long)(Float.valueOf(node.get("time").asText()) * 1000));
+        testResult.setDurationMs((long) (Float.valueOf(node.get("time").asText()) * 1000));
 
         if (node.has("failure")) {
             testResult.setStatus(TestStatus.FAILED);
