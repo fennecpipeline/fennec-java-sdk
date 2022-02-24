@@ -50,7 +50,7 @@ public class EventTestsUtils {
     public static void testUpdateJobEvent(TimestampedEvent timestampedEvent, String displayName) {
         assertThat(timestampedEvent, instanceOf(UpdateJobEvent.class));
         UpdateJobEvent event = (UpdateJobEvent) timestampedEvent;
-        assertThat(event.getTimestamp(), notNullValue()));
+        assertThat(event.getTimestamp(), notNullValue());
         assertThat(event.getDisplayName(), equalTo(displayName));
     }
 
