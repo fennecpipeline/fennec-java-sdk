@@ -1,0 +1,16 @@
+prepare:
+  image: maven:3.8.4-openjdk-11-slim
+  command: [ "mvn" ]
+  args: [ "clean", "package" ]
+pipeline:
+  image: maven:3.8.4-openjdk-11-slim
+  command: [ "java" ]
+  args: [ "-jar", "target/pipeline.jar" ]
+  env:
+    - name: SONAR_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: sonarqube-auth
+          key: token
+    - name: SONAR_URL
+      value: http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000
