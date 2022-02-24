@@ -37,7 +37,7 @@ import static org.fennec.sdk.utils.Utils.getProjectFolder;
  *     <li>Main version is 1.1</li>
  *     <li>Fetch tags give tags 1.1.1, 1.1.2 and 1.1.3</li>
  *     <li>It creates version 1.1.3</li>
- * <ul/>
+ * </ul>
  */
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
