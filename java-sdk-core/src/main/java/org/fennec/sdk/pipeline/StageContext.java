@@ -4,6 +4,10 @@ import org.fennec.sdk.model.commons.TestReport;
 
 public interface StageContext {
 
+    String getVersion();
+
+    void setVersion(String version);
+
     String getStage();
 
     String getParallel();

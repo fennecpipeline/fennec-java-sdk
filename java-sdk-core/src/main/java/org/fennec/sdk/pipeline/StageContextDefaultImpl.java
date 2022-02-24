@@ -11,15 +11,18 @@ import org.fennec.sdk.model.commons.TestReport;
 @Setter
 public class StageContextDefaultImpl implements StageContext {
 
+    private String version;
+
     private String stage;
 
     private String parallel;
 
     private TestReport TestResults;
 
-    public StageContextDefaultImpl(String stage, String parallel) {
+    public StageContextDefaultImpl(String stage, String parallel, String version) {
         super();
         this.stage = stage;
         this.parallel = parallel;
+        this.version = version;
     }
 }

@@ -21,6 +21,8 @@ public class Pipeline {
 
     private final StageEventPublisher eventPublisher = new StageEventPublisher();
 
+    private final PipelineContext pipelineContext = new PipelineContext();
+
     /**
      * The runnable to execute when pipeline fail
      */
@@ -467,11 +469,16 @@ public class Pipeline {
             mdcContextMap.put(PipelineConstants.STAGE_NAME, stage.getName());
         }
         MDC.setContextMap(mdcContextMap);
-        StageContext context = new StageContextDefaultImpl(stage.getName(), stage.getParallel());
+        StageContext context = new StageContextDefaultImpl(stage.getName(),
+                stage.getParallel(),
+                pipelineContext.getVersion());
         eventPublisher.start(stage.getName(), stage.getParallel(), stage.getDeployment());
         try {
             stage.getHandler().run(context);
             eventPublisher.end(stage.getName(), context.getTestResults());
+            if (context.getVersion() != null) {
+                pipelineContext.setVersion(context.getVersion());
+            }
             return true;
         } catch (Exception e) {
             eventPublisher.error(stage.getName(), e, context.getTestResults());

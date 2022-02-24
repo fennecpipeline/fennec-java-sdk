@@ -13,7 +13,7 @@ To import it, add following dependency:
 <dependency>
     <groupId>org.fennecpipeline</groupId>
     <artifactId>java-sdk-core</artifactId>
-    <version>1.0.0</version>
+    <version>${fennecpipeline.version}</version>
 </dependency>
 ```
 
@@ -182,7 +182,7 @@ To import it, add following dependency:
 <dependency>
     <groupId>org.fennecpipeline</groupId>
     <artifactId>java-sdk-utilities</artifactId>
-    <version>1.0.0</version>
+    <version>${fennecpipeline.version}</version>
 </dependency>
 ```
 
@@ -270,6 +270,58 @@ public class MyPipeline {
 }
 ```
 
+## Commons stages
+
+The Kubernetes package provides useful tools to interact with Kubernetes. It uses your default configuration, but you can still override it.
+
+To import it, add following dependency:
+
+```xml
+
+<dependency>
+    <groupId>org.fennecpipeline</groupId>
+    <artifactId>java-sdk-common-stages</artifactId>
+    <version>${fennecpipeline.version}</version>
+</dependency>
+```
+
+### How to
+
+#### Compute Maven version from tag history
+
+Computes the version from maven POM and then put it in the context.
+
+* It gets the last tag from current branch prefixed by the version in the pom.xml
+* It increments the patch number
+* If no tag is present it starts at .1
+* Then it applies the prefix and suffix
+
+Example with version 1.1-SNAPSHOT:
+
+* Main version is 1.1
+* Fetch tags give tags 1.1.1, 1.1.2 and 1.1.3
+* It creates version 1.1.3
+
+```java
+public class MyPipeline {
+    
+    public static void main(String[] args) {
+        stage("Stage name", ComputeMavenVersion
+                .numberOfDigits(3)
+                .build());
+    }
+}
+```
+
+Following options are available:
+
+- `numberOfDigits`: The number of expected digits (example 3 for X.Y.Z). Default is 3
+- `prefix`: Add a prefix (example: `release-`). Default: Empty
+- `sufix`: Add a suffix (example: .RC). Default empty
+- `git`: The Jgit client (to share it across stages)
+- `pomLocation`: Provide custom pom location. Default is `user.dir/../pom.xml`
+
+
 ## Kubernetes
 
 The Kubernetes package provides useful tools to interact with Kubernetes. It uses your default configuration, but you can still override it.
@@ -281,7 +333,7 @@ To import it, add following dependency:
 <dependency>
     <groupId>org.fennecpipeline</groupId>
     <artifactId>java-sdk-kubernetes-extension</artifactId>
-    <version>1.0.0</version>
+    <version>${fennecpipeline.version}</version>
 </dependency>
 ```
 
@@ -294,7 +346,7 @@ public class MyPipeline {
     
     public static void main(String[] args) {
         stage("Stage name", (context) -> {
-            ubernetesExecService kubernetesExecService = new KubernetesExecService(client,
+            KubernetesExecService kubernetesExecService = new KubernetesExecService(client,
                     "test",
                     "test",
                     "test-container",

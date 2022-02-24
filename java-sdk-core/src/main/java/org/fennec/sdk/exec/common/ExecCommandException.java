@@ -1,11 +1,12 @@
 package org.fennec.sdk.exec.common;
 
 import lombok.Getter;
+import org.fennec.sdk.error.CancelJobException;
 
 import java.util.Arrays;
 
 @Getter
-public class ExecCommandException extends Exception {
+public class ExecCommandException extends CancelJobException {
 
     private static final long serialVersionUID = 1L;
 

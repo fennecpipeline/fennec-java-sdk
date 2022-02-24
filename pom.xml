@@ -45,11 +45,13 @@
         <kubernetes-client.version>5.11.2</kubernetes-client.version>
         <slf4j-api.version>1.7.35</slf4j-api.version>
         <logback.version>1.2.6</logback.version>
+        <jgit.version>6.0.0.202111291000-r</jgit.version>
         <junit-jupiter-api.version>5.8.1</junit-jupiter-api.version>
         <hamcrest-all.version>1.3</hamcrest-all.version>
         <awaitility.version>4.1.1</awaitility.version>
         <wiremock.version>2.27.2</wiremock.version>
         <kubernetes-server-mock.version>4.11.0</kubernetes-server-mock.version>
+        <mockito.version>1.10.19</mockito.version>
         <!-- Sonar -->
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <sonar-maven-plugin.version>3.9.1</sonar-maven-plugin.version>
@@ -86,6 +88,11 @@
             <dependency>
                 <groupId>org.fennecpipeline</groupId>
                 <artifactId>java-sdk-kubernetes-extension</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.fennecpipeline</groupId>
+                <artifactId>java-sdk-common-stages</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -151,6 +158,11 @@
                 <version>${woodstox-core.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit</artifactId>
+                <version>${jgit.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
                 <version>${junit-jupiter-api.version}</version>
@@ -170,6 +182,11 @@
                 <artifactId>wiremock</artifactId>
                 <version>${wiremock.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -180,6 +197,7 @@
         <module>java-sdk-utilities</module>
         <module>java-sdk-kubernetes-extension</module>
         <module>report</module>
+        <module>java-sdk-common-stages</module>
     </modules>
 
     <build>

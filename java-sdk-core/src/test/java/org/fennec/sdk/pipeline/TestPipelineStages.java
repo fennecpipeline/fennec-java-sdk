@@ -70,6 +70,17 @@ class TestPipelineStages {
     }
 
     @Test
+    void testVersionPropagated() {
+        stage("Init", context -> {
+            context.setVersion("1.0.0");
+        });
+
+        stage("Build", context -> {
+            assertThat(context.getVersion(), equalTo("1.0.0"));
+        });
+    }
+
+    @Test
     void testFailingStage() {
 
         CompletableFuture<Void> completableFuture = new CompletableFuture<>();
