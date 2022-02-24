@@ -12,5 +12,10 @@ pipeline:
         secretKeyRef:
           name: sonarqube-auth
           key: token
+    - name: PGP_PASSPHRASE
+      valueFrom:
+        secretKeyRef:
+          name: pgp-sign
+          key: passphrase
     - name: SONAR_URL
       value: http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000

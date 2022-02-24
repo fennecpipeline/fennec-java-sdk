@@ -61,7 +61,9 @@ public class Pipeline {
         });
 
         stage("Deploy", context -> {
-            exec("mvn", "-Prelease", "deploy", "-DskipTests");
+            String passPhrase = env("PGP_PASSPHRASE").orElseThrow(() -> new IllegalStateException(
+                    "Please provide PGP_PASSPHRASE env variable"));
+            exec("mvn", "-Prelease", "deploy", "-DskipTests", "-Dgpg.passphrase=" + passPhrase);
         });
 
         stage("Complete Release", context -> {
