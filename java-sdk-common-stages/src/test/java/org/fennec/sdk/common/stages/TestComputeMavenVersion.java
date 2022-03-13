@@ -1,6 +1,7 @@
 package org.fennec.sdk.common.stages;
 
 import lombok.SneakyThrows;
+import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListTagCommand;
 import org.eclipse.jgit.api.LogCommand;
@@ -10,6 +11,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.TagOpt;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.fennec.sdk.common.stages.maven.ComputeMavenVersion;
 import org.fennec.sdk.pipeline.StageContextDefaultImpl;
 import org.junit.jupiter.api.Test;
@@ -23,6 +26,13 @@ import static org.mockito.Mockito.*;
 
 public class TestComputeMavenVersion {
 
+    private void mockFetch(Git git) {
+        FetchCommand fetchCommand = mock(FetchCommand.class);
+        when(git.fetch()).thenReturn(fetchCommand);
+        when(fetchCommand.setTagOpt(TagOpt.FETCH_TAGS)).thenReturn(fetchCommand);
+        when(fetchCommand.setCredentialsProvider(any())).thenReturn(fetchCommand);
+    }
+
     @Test
     @SneakyThrows
     public void testInitialVersion() {
@@ -31,6 +41,8 @@ public class TestComputeMavenVersion {
 
         Repository repository = mock(Repository.class);
         when(git.getRepository()).thenReturn(repository);
+
+        mockFetch(git);
 
         when(git.tagList()).thenReturn(mockListTag);
         when(mockListTag.call()).thenReturn(Arrays.asList());
@@ -47,7 +59,7 @@ public class TestComputeMavenVersion {
         ComputeMavenVersion computeMavenVersion = ComputeMavenVersion
                 .builder()
                 .git(git)
-                .numberOfDigits(3)
+                .credentialsProvider(new UsernamePasswordCredentialsProvider("username", "password"))
                 .pomLocation("src/test/resources/pom.xml")
                 .build();
 
@@ -66,6 +78,8 @@ public class TestComputeMavenVersion {
         Repository repository = mock(Repository.class);
         when(git.getRepository()).thenReturn(repository);
 
+        mockFetch(git);
+
         when(git.tagList()).thenReturn(mockListTag);
         when(mockListTag.call()).thenReturn(Arrays.asList());
         when(repository.getFullBranch()).thenReturn("main");
@@ -81,7 +95,6 @@ public class TestComputeMavenVersion {
         ComputeMavenVersion computeMavenVersion = ComputeMavenVersion
                 .builder()
                 .git(git)
-                .numberOfDigits(4)
                 .prefix("candidate-")
                 .suffix("-RC")
                 .pomLocation("src/test/resources/pom4digits.xml")
@@ -102,6 +115,8 @@ public class TestComputeMavenVersion {
         Repository repository = mock(Repository.class);
         when(git.getRepository()).thenReturn(repository);
         when(git.tagList()).thenReturn(mockListTag);
+
+        mockFetch(git);
 
         RevWalk revCommits = new RevWalk((ObjectReader) null);
         RevCommit revCommit101 = revCommits.lookupCommit(ObjectId.fromString("b7f3de4666fd4b1e535163c0ced78f2920aac4a4"));
@@ -127,7 +142,6 @@ public class TestComputeMavenVersion {
                 .builder()
                 .git(git)
                 .pomLocation("src/test/resources/pom.xml")
-                .numberOfDigits(3)
                 .build();
 
         StageContextDefaultImpl stageContext = new StageContextDefaultImpl("Test", null, null);

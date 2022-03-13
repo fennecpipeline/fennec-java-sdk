@@ -4,10 +4,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.TagOpt;
 import org.fennec.sdk.pipeline.StageContext;
 import org.fennec.sdk.pipeline.model.SimpleStageHandler;
 
@@ -17,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -45,17 +49,6 @@ import static org.fennec.sdk.utils.Utils.getProjectFolder;
 public class ComputeMavenVersion implements SimpleStageHandler {
 
     /**
-     * The number of Digit for the version. Examples:
-     * <ul>
-     *     <li>3 for a version X.Y.Z</li>
-     *     <li>4 for a version W.X.Y.Z</li>
-     * </ul>
-     * <p>
-     * Default is 3
-     */
-    private int numberOfDigits;
-
-    /**
      * Add a prefix (example: release-). Default: Empty
      */
     private String prefix;
@@ -66,9 +59,14 @@ public class ComputeMavenVersion implements SimpleStageHandler {
     private String suffix;
 
     /**
-     * Provide git client
+     * Provides git client
      */
     private Git git;
+
+    /**
+     * Provides Credentials provider
+     */
+    private CredentialsProvider credentialsProvider;
 
     /**
      * Provide pom location. Default is user.dir/../pom.xml
@@ -84,11 +82,19 @@ public class ComputeMavenVersion implements SimpleStageHandler {
                 git = Git.open(dir);
             }
 
+            // Fetch tags
+            FetchCommand fetchCommand = git.fetch().setTagOpt(TagOpt.FETCH_TAGS);
+            if (credentialsProvider != null) {
+                fetchCommand = fetchCommand.setCredentialsProvider(credentialsProvider);
+            }
+            fetchCommand.call();
+
             String majorMinor = readXML(new File(Optional
                     .ofNullable(pomLocation)
                     .orElse(getProjectFolder() + "/pom.xml"))).get("version").asText()
-                    // The digit prefix * 2
-                    .substring(0, (numberOfDigits - 1) * 2 - 1);
+                    .replace(Optional.ofNullable(prefix).orElse(""), "")
+                    .replace(Optional.ofNullable(suffix).orElse(""), "")
+                    .replace("-SNAPSHOT", "");
 
             log.info("Raw version: {}", majorMinor);
 
