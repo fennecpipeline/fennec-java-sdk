@@ -2,6 +2,8 @@ package org.fennecpipeline.sdk;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.fennec.sdk.common.stages.maven.ComputeMavenVersion;
 
 import java.io.File;
@@ -22,6 +24,14 @@ public class Pipeline {
 
     private static Git git;
 
+    private static CredentialsProvider usernamePassword() {
+        String gitUser = env("GIT_USERNAME").orElseThrow(() -> new IllegalStateException(
+                "Please provide GIT_USERNAME env variable"));
+        String gitPassword = env("GIT_PASSWORD").orElseThrow(() -> new IllegalStateException(
+                "Please provide GIT_PASSWORD env variable"));
+        return new UsernamePasswordCredentialsProvider(gitUser, gitPassword);
+    }
+
     public static void main(String[] args) {
 
         stage("Init", context -> {
@@ -33,7 +43,12 @@ public class Pipeline {
             }
         });
 
-        stage("Compute version", ComputeMavenVersion.builder().numberOfDigits(3).git(git).build());
+        stage("Import GPG Key", context -> {
+            exec("gpg", "--import", "/gpg/private.key");
+        });
+
+        stage("Compute version",
+                ComputeMavenVersion.builder().credentialsProvider(usernamePassword()).git(git).build());
 
         stage("Set version", context -> {
             exec("mvn", "versions:set", "-DgenerateBackupPoms=false", "-DnewVersion=" + context.getVersion());
@@ -61,8 +76,8 @@ public class Pipeline {
         });
 
         stage("Deploy", context -> {
-            String passPhrase = env("PGP_PASSPHRASE").orElseThrow(() -> new IllegalStateException(
-                    "Please provide PGP_PASSPHRASE env variable"));
+            String passPhrase = env("GPG_PASSPHRASE").orElseThrow(() -> new IllegalStateException(
+                    "Please provide GPG_PASSPHRASE env variable"));
             exec("mvn", "-Prelease", "deploy", "-DskipTests", "-Dgpg.passphrase=" + passPhrase);
         });
 
@@ -71,8 +86,8 @@ public class Pipeline {
                 git.add().addFilepattern(".").call();
                 git.commit().setMessage("Version " + context.getVersion()).call();
                 git.tag().setName(context.getVersion()).call();
-                git.push().call();
-                git.push().setPushTags().call();
+                git.push().setCredentialsProvider(usernamePassword()).call();
+                git.push().setCredentialsProvider(usernamePassword()).setPushTags().call();
             } catch (Exception e) {
                 fail("Unable to Complete release", e);
             }
@@ -84,8 +99,9 @@ public class Pipeline {
                         "versions:set",
                         "-DgenerateBackupPoms=false",
                         "-DnewVersion=" + context.getVersion().substring(0, 3) + "-SNAPSHOT");
+                git.add().addFilepattern(".").call();
                 git.commit().setMessage("Tear down version " + context.getVersion()).call();
-                git.push().call();
+                git.push().setCredentialsProvider(usernamePassword()).call();
             } catch (Exception e) {
                 fail("Unable to complete tear down", e);
             }

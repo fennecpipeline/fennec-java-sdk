@@ -1,0 +1,44 @@
+volumes:
+  - name: gpg-private-key-volume
+    secret:
+      secretName: gpg-sign
+      items:
+        - key: private-key
+          path: /gpg/private.key
+  - name: settings-xml-volume
+    configMap: 
+      name: settings-xml
+prepare:
+  image: maven:3.8.4-openjdk-11-slim
+  command: [ "mvn" ]
+  args: [ "clean", "package" ]
+pipeline:
+  image: maven:3.8.4-openjdk-11-slim
+  command: [ "java" ]
+  args: [ "-jar", "target/pipeline.jar" ]
+  volumeMounts:
+    - name: settings-xml-volume
+      mountPath: /usr/share/maven/ref/
+  env:
+    - name: SONAR_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: sonarqube-auth
+          key: token
+    - name: GPG_PASSPHRASE
+      valueFrom:
+        secretKeyRef:
+          name: gpg-sign
+          key: passphrase
+    - name: OSSRH_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: ossrh-auth
+          key: username
+    - name: OSSRH_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: ossrh-auth
+          key: password
+    - name: SONAR_URL
+      value: http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000
